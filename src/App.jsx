@@ -1,32 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
+import QRCode from 'react-qr-code'
+import QRCodeLink from 'qrcode'
+import { useState } from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [link, setLink] = useState('')
+  const [qrcodeLink, setQrcodeLink] = useState('')
+
+  function handleGenerate(Link_url){
+    QRCodeLink.toDataURL(Link_url, {
+      width: 600,
+      margin: 3,
+    }, function(err, url){
+      setQrcodeLink(url)
+    })
+  }
+
+  function handleQrcode(e){
+    setLink(e.target.value)
+    handleGenerate(e.target.value)
+  }
 
   return (
     <div className="App">
+
+      <QRCode
+        value={link}
+      />
+
+      <input 
+        type="text" 
+        className='input'
+        placeholder='Digite seu link...' 
+        value={link}
+        onChange={(e) => handleQrcode(e)}
+      />
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <a href="{qrcodeLink}" download={`qrcode.png`}>Baixar QrCode</a>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   )
 }
